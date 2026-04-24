@@ -4,7 +4,6 @@ import com.tenco.blog.model.Board;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -23,9 +22,9 @@ public class BoardNativeRepository {
         Query query = em.createNativeQuery("insert into " +
                 "board_tb(title, content,username,created_at) values (?,?,?,now())");
 
-        query.setParameter(1,title);
-        query.setParameter(2,content);
-        query.setParameter(3,username);
+        query.setParameter(1, title);
+        query.setParameter(2, content);
+        query.setParameter(3, username);
 
         query.executeUpdate();
     }
@@ -37,8 +36,56 @@ public class BoardNativeRepository {
                 """;
 
         // while(rs.next) { Board board = new Board(); board.setTitle(rs.getString("title"))}
-        Query query = em.createNativeQuery(sql,Board.class);
+        Query query = em.createNativeQuery(sql, Board.class);
 
         return query.getResultList();
+    }
+
+    public Board findById(Integer id) {
+        String strQuery = """
+                select * from board_tb where id = ?
+                """;
+        try {
+            Query query = em.createNativeQuery(strQuery, Board.class);
+            query.setParameter(1, id);
+            return (Board) query.getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    // 특정 게시글 삭제 요청
+    @Transactional
+    public void deleteById(Integer id) {
+        String strQuery = """
+                delete from board_tb where id = ?
+                """;
+        Query query = em.createNativeQuery(strQuery);
+        query.setParameter(1, id);
+        query.executeUpdate();
+    }
+
+    // 게시글 수정
+    @Transactional
+    public boolean updateById(String username, String title, String content, Integer id) {
+        String queryStr = """
+                update board_tb
+                set username = ?, title = ?, content = ?
+                where id = ?
+                """;
+
+        Query query = em.createNativeQuery(queryStr);
+        query.setParameter(1,username);
+        query.setParameter(2,title);
+        query.setParameter(3,content);
+        query.setParameter(4,id);
+
+        int rows = query.executeUpdate();
+
+        if (rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
