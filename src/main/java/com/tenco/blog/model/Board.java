@@ -3,7 +3,6 @@ package com.tenco.blog.model;
 import com.tenco.blog.util.MyDateUtil;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Timestamp;
 
