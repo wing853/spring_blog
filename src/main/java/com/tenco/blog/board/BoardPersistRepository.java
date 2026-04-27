@@ -64,4 +64,18 @@ public class BoardPersistRepository {
 
     }
 
+    @Transactional
+    // 3. 게시글 삭제
+    public void deleteById(Integer id) {
+        // 1. 먼저 삭제 하고자 하는 엔티티를 조회
+        // 1-1. 조회가 되었기 때문에 board는 영속화 된 상태
+        Board board = em.find(Board.class,id);
+
+        if(board == null) {
+            throw new IllegalArgumentException("삭제할 계시글을 찾을 수 없습니다" + id);
+        }
+
+        em.remove(board);
+    }
+
 }
