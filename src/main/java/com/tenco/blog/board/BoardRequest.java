@@ -25,4 +25,29 @@ public class BoardRequest {
                     .build();
         }
     }
+
+    // 내부 정적 클래스 게시글 수정 DTO 설계
+    @Data
+    @Builder
+    public static class UpdateDTO {
+        private String username;
+        private String title;
+        private String content;
+
+        // 게시글 수정시 유효성 검사 편의 메서드
+        public void validate() {
+            //  유효성 검사
+            if(username.isEmpty() || username == null){
+                throw new IllegalArgumentException("작성자 이름은 필수 입니다.");
+            }
+
+            if(title.trim().isEmpty() || title == null){
+                throw new IllegalArgumentException("제목은 필수 입니다.");
+            }
+
+            if(content.length() < 3 || content == null){
+                throw new IllegalArgumentException("내용은 3글자 이상 작성해야 합니다.");
+            }
+        }
+    }
 }
