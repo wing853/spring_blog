@@ -46,4 +46,22 @@ public class BoardPersistRepository {
         return boardList;
     }
 
+    // 게시글 상세보기 요청(조회 - 필수값 기본키로 조회)
+    public Board findById(Integer id) {
+
+        // 영속성 컨텍스트를 활용
+        // 1. 엔티티 매니저에서 제공하는 메서드를 활용 방법
+        //Board board = em.find(Board.class,id);
+
+        // 2. JPQL 문법으로 Board를 조회하는 방법
+        String jpql = """
+                SELECT b FROM Board b WHERE b.id = :id
+                """;
+
+        return em.createQuery(jpql,Board.class)
+                .setParameter("id", id)
+                .getSingleResult();
+
+    }
+
 }
