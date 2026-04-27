@@ -1,6 +1,5 @@
-package com.tenco.blog.repository;
+package com.tenco.blog.board;
 
-import com.tenco.blog.model.Board;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
@@ -75,10 +74,10 @@ public class BoardNativeRepository {
                 """;
 
         Query query = em.createNativeQuery(queryStr);
-        query.setParameter(1,username);
-        query.setParameter(2,title);
-        query.setParameter(3,content);
-        query.setParameter(4,id);
+        query.setParameter(1, username);
+        query.setParameter(2, title);
+        query.setParameter(3, content);
+        query.setParameter(4, id);
 
         int rows = query.executeUpdate();
 

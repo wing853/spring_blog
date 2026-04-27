@@ -1,7 +1,6 @@
-package com.tenco.blog.controller;
+package com.tenco.blog.board;
 
-import com.tenco.blog.model.Board;
-import com.tenco.blog.repository.BoardNativeRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -19,6 +18,7 @@ import java.util.List;
 public class BoardController {
     // DI 처리
     private final BoardNativeRepository boardNativeRepository;
+    private final BoardPersistRepository boardPersistRepository;
 
 //    public BoardController(BoardNativeRepository boardNativeRepository) {
 //        this.boardNativeRepository = boardNativeRepository;
@@ -45,20 +45,12 @@ public class BoardController {
      */
 
     @PostMapping("/board/save")
-    public String saveProc(
-            @RequestParam("username") String username,
-            @RequestParam("title") String title,
-            @RequestParam("content") String content) {
+    // 사용자 요청 -> HTTP 요청 메세지(Post) ->
+    public String saveProc(BoardRequest.SaveDTO saveDTO) {
 
-        log.info("username: " + username);
-        log.info("title: " + title);
-        log.info("content: " + content);
-
-        // insert +  트랜잭션 처리
-        boardNativeRepository.save(title, content, username);
+        boardPersistRepository.save(saveDTO.toEntity());
         // redirect <-- 다시 url 요청
         return "redirect:/";
-        //return "/";
     }
 
     /**
@@ -70,7 +62,7 @@ public class BoardController {
 
     @GetMapping({"/", "index"})
     public String list(Model model) {
-        List<Board> boardList = boardNativeRepository.findAll();
+        List<Board> boardList = boardPersistRepository.findAll();
         model.addAttribute("boardList", boardList);
 
         return "board/list";
